@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="mt-4">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    {{message}}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %} 
+    </div>
+    
+    {{email}}
+    <div class="d-flex mt-4" >
+        <div class="w-50" style="margin-right: 55px;padding-right:50px;border-right: 1px solid rgb(227, 227, 227)">
+            <h3>Insurances..</h3>
+            <table class="table table-hover table-bordered mt-4">
+                <!-- <thead>
+                    <tr>
+                        <th scope="col">
+                            Name
+                        </th>
+                    </tr>
+                </thead> -->
+                
+                <tbody>
+                    {% for insurance in insurance_list %}
+                    <tr>
+                        <td>
+                            {{insurance.display_id}}
+                        </td>
+                        <td>
+                            <a style="text-decoration: none; color: black;" href="{% url 'insurance_detail' insurance.id %}">{{ insurance }}</a> <br/> 
+                        </td>
+                        <td align="right">
+                            <a class="btn btn-outline-secondary btn-sm" style="text-decoration: none; color: black;" href="{% url 'delete_insurance' insurance.id %}">delete</a> <br/> 
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                
+            </table>
+            
+        </div>
+        <div>
+            <h5>New Insurance </h5>
+            <form action="" method=POST class="mt-4">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <input type="submit" class="btn btn-secondary mt-4" value="submit"/>
+            </form>  
+        </div>
+    </div>
+    
+{% endblock %}
