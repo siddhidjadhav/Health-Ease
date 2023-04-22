@@ -1,0 +1,33 @@
+{% extends 'patient_navbar.html' %}
+
+{% block content %}
+    <div class="mt-4">
+        <p style="font-size: 30px; font-weight: 500">Booked Appointments</p>
+
+        <div class="d-flex">
+            {% for appointment in appointments %}
+            
+
+                <div class="card mt-4" style="width: fit-content;margin-right: 20px;">
+                    <div class="card-header">
+                        <h6>Dr. {{appointment.doctor_id.first_name}}</h6>
+                    </div>
+                    <div class="card-body">
+                        <p style="font-size: 18px">Date: {{appointment.date}}</p>
+                        <p style="font-size: 18px">Time: {{appointment.time}}</p>
+                    </div>
+                    <div class="card-footer">
+                        <form action="" method="POST">
+                            {% csrf_token %}
+                            <input type="hidden" value="{{appointment.id}}" name="appointment_id" >
+                            <button class="btn btn-danger">Cancel</button>
+                        </form>
+                    </div>
+                </div>
+            
+            {% endfor %}
+        </div>
+        
+        
+    </div>
+{% endblock %}

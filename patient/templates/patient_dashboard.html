@@ -1,0 +1,45 @@
+{% extends 'patient_navbar.html' %}
+
+<style>
+    
+
+</style>
+
+{% block content %}
+    <div>
+<div style="width: 80%;margin: 0px auto;">
+        <!-- <p style="border:1px solid rgb(195, 195, 195);padding: 10px; border-radius: 5px;">Doctors</p> -->
+
+        <table class="table table-hover mt-4">
+            <thead>
+            <tr>
+                <th style="font-size: 15px; color: rgb(136, 136, 136)" scope="col" colspan="2">Name</th>
+                <th style="font-size: 15px; color: rgb(136, 136, 136)" scope="col">Email</th>
+                <th style="font-size: 15px; color: rgb(136, 136, 136)" scope="col">Booking</th>
+            </tr>
+            </thead>
+            <tbody>
+            
+            
+            {% for doctor in doctors %}
+                <tr style="font-size: 16px;">
+                    <td colspan="2">
+                        {{doctor.first_name}} {{doctor.last_name}}
+                    </td>
+                    <td>{{doctor.email}}</td>
+                    <td>
+                        <form method="POST">
+                            {% csrf_token %}
+                            <input type="hidden" name="doctor_id" value="{{ doctor.id }}">
+                            <button type="submit" class="btn btn-primary appointment-button" style="font-size: 12px;">Book Appointment</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div> 
+    </div>
+    
+    
+{% endblock %}
