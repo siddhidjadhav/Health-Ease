@@ -1,5 +1,5 @@
 
-{% extends 'base.html' %}
+{% extends 'doctor_base.html' %}
 {% load static %}
 {% block extrahead %} 
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
@@ -10,6 +10,29 @@
 <style>
     .dashboard-container {
         margin-top: 30px;
+        margin: 0px auto;
+        width: 90%;
+    }
+
+    .head-container {
+        padding: 20px 0px;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .date-display-container p{
+        margin: 0px;
+    }
+
+    .date-display-header {
+        font-size: 14px;
+        text-align: right;
+        font-weight: 500;
+        color: rgb(128, 128, 128);
+    }
+    .date-display-data {
+        font-size: 18px;
+        font-weight: bold;
     }
 
     .small-blocks-container {
@@ -17,8 +40,8 @@
         flex-direction: row;
         justify-content: space-around;
         gap: 30px;
-        width: 90%;
-        margin: 0px auto;
+        
+        
     }
 
     .small-blocks {
@@ -48,13 +71,19 @@
 
 
 {% endblock %}
-    
-{% block sidebar %} 
-    {% include 'doctor_sidebar.html' %} 
-{% endblock %}
+
 
 {% block content %}
-    <div class="dashboard-container container-fluid">
+    <div class="dashboard-container">
+        <div class="head-container">
+            <div>
+                <p>Dashboard</p>
+            </div>
+            <div class="date-display-container">
+                <p class="date-display-header">Today's Date</p>
+                <p class="date-display-data">{{todays_date |date:"Y-m-d"}}</p>
+            </div>
+        </div>
 
         {{message}}
         <div class="small-blocks-container">
@@ -71,7 +100,7 @@
                 <p class="small-blocks-value"> {{not_booked}}</p>
             </div>
         </div>        
-        <div class="mt-4" style="width: 90%;margin: 0px auto;">
+        <div class="mt-4">
             
             {% if appointment_for_today %}
             <p style="font-size:22px;font-weight: bold; color: rgb(136, 136, 136);">Appointments for today</p>
@@ -83,6 +112,7 @@
                     <th style="font-size: 15px; color: rgb(136, 136, 136)" scope="col">Date</th>
                     <th style="font-size: 15px; color: rgb(136, 136, 136)" scope="col">Time</th>
                     <th style="font-size: 15px; color: rgb(136, 136, 136)" scope="col">Booking</th>
+                    <th style="font-size: 15px; color: rgb(136, 136, 136)" scope="col">Modify</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -97,13 +127,21 @@
                         <td>{{appointment.date}}</td>
                         <td>{{appointment.time}}</td>
                         <td>
-                            {% if not appointment.patient_id %} 
+                            {% if appointment.status == "open" %} 
                                     <span style="color: rgb(58, 253, 58); font-weight: bold;">Not Booked</span>
                                 {% endif %}
-                            {% if appointment.patient_id %} 
+                            {% if appointment.status == "booked" %} 
                                 <span style="color: rgb(236, 29, 29); font-weight: bold;">Booked</span>
                             {% endif %}
                         </td>
+                        <td>
+                            <form method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" name="appointment_id" value="{{ appointment.id }}">
+                                <button type="submit" class="btn btn-primary appointment-button" style="font-size: 12px;">Update</button>
+                            </form>
+                        </td>
+                        
                     </tr>
                 {% endfor %}
                 </tbody>

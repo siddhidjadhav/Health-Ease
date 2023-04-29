@@ -2,11 +2,11 @@ from django.shortcuts import render, redirect
 import re
 from .utility import check_if_user_is_doctor
 from django.contrib.auth import get_user_model
-from .forms import AppointmentForm
 from system.models import Appointment
 from datetime import datetime
 from django.utils import timezone
 from django.contrib import messages
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 
 
 def doctor_dashboard(request):
@@ -19,10 +19,14 @@ def doctor_dashboard(request):
     #         message = "yes"
     #         return redirect('patient_dashboard')
 
+    if request.method=='POST':
+        appointment_id = request.POST.get('appointment_id')
+        return redirect(f'add_prescription/{appointment_id}',)
+
 
     todays_date = timezone.now().date()
     current_time = timezone.now()
-    appointment_for_today = Appointment.objects.filter(date=todays_date, time__gt=current_time, doctor_id=request.user, patient_id__isnull=False)
+    appointment_for_today = Appointment.objects.filter(date=todays_date, time__gt=current_time, doctor_id=request.user, patient_id__isnull=False).exclude(status='closed')
     upcoming_appointments = Appointment.objects.filter(doctor_id=request.user).exclude(date=todays_date)
     booked_appointments = 0
     not_booked_appointments = 0
@@ -34,7 +38,7 @@ def doctor_dashboard(request):
             not_booked_appointments = not_booked_appointments+1
 
     doctor = f"{request.user.first_name} {request.user.last_name}"
-    return render(request, 'doctor_dashboard.html', { 'doctor':doctor, 'appointment_for_today':appointment_for_today, 'booked': booked_appointments, 'not_booked': not_booked_appointments, 'total_appointments': total_appointments, 'request': request})
+    return render(request, 'doctor_dashboard.html', { 'doctor':doctor, 'appointment_for_today':appointment_for_today, 'booked': booked_appointments, 'not_booked': not_booked_appointments, 'total_appointments': total_appointments, 'request': request, 'todays_date': todays_date})
 
 
 def create_appointment(request):
@@ -62,5 +66,39 @@ def create_appointment(request):
     
     else:
         appointments = Appointment.objects.filter(doctor_id=request.user)
-        return render(request, 'create_appointment.html', {'appointments': appointments})
+        return render(request, 'create_appointment.html', {'appointments': appointments, 'request': request})
     
+
+def add_prescription(request, appointment_id):
+    if request.method=="POST":
+        status = request.POST.get('status')
+        prescription = request.POST.get('prescription')
+
+        appointment = Appointment.objects.get(id=appointment_id)
+        appointment.status = status 
+        appointment.prescription = prescription
+        appointment.save()
+
+        return redirect('doctor_dashboard')
+    
+    appointment = Appointment.objects.get(id=appointment_id)
+    patient = get_user_model().objects.get(id=appointment.patient_id.id)
+    appointment_history = Appointment.objects.filter(patient_id=patient, status='closed')
+
+    return render(request, 'add_prescription.html', {'appointment': appointment, 'appointment_history': appointment_history, 'patient': patient, 'request': request})
+    
+def appointments_list(request):
+    appointment_list = Appointment.objects.filter(doctor_id=request.user).order_by('date', 'time')
+    paginator = Paginator(appointment_list, 10) # Show 10 appointments per page
+
+    page = request.GET.get('page')
+    try:
+        appointments = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        appointments = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        appointments = paginator.page(paginator.num_pages)
+
+    return render(request, 'all_appointments.html', {'appointments': appointments, 'request': request})
