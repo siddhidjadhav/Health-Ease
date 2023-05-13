@@ -5,10 +5,10 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" type="image/x-icon" href="{% static 'healthcarelogo.png' %}">
-    <title style="color: blue;">Health Ease</title>
+    <title style="color: blue;">HealthinessEase</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
     {% block extrahead %} 
-      <link rel="stylesheet" type="text/css" href="{% static 'css/doctor_styles.css' %}">
+      
     {% endblock %}
     {% block styles %} 
     <style>
@@ -20,7 +20,7 @@
         position: fixed;
         background-color: rgb(237, 240, 241);
         padding: 20px 0px;
-        width: 240px;
+        width: 300px;
         top: 0;
         bottom: 0;
         margin: 0;
@@ -29,7 +29,7 @@
         margin: 0;
       }
       .right-container {
-        left: 240px;
+        left: 300px;
         right: 0;
       }
       .page-navbar {
@@ -72,13 +72,13 @@
   <body>
     
     <div class="page-navbar">
-      {% include 'patient_page_navbar.html' %}
+      {% include 'doctor_page_navbar.html' %}
     </div>
     <div class="position-relative">
       <div class="left-container ">
         <div>
           <li class="px-2">
-            <h3>HealthEase</h3>
+            <h3>HealthinessEase</h3>
           </li>
         </div>
         <div class="mt-5 page-navbar-items">

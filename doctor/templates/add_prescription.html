@@ -1,7 +1,33 @@
 {% extends 'doctor_base.html' %} 
 {% load static %}
 {% block extrahead %} 
-    <link rel="stylesheet" href="{% static 'css/doctor_styles.css' %}">
+    <link rel="stylesheet" href="{% static 'css/doctor_styles_v1.css' %}">
+    <style>
+        .main-container {
+            width: 90%;
+            margin: auto;
+            margin-top: 30px;
+        }
+
+        
+        .prescription-container {
+            box-shadow: 1px 1px 2px 1px black;
+            background-color:rgb(246, 251, 251);
+        }
+
+        .prescription-form label {
+            font-size: 16px;
+            color: rgb(60, 60, 60);
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+
+        .prescription-form .section {
+            margin-bottom: 20px;
+        }
+
+
+    </style>
 {% endblock %}
 
 

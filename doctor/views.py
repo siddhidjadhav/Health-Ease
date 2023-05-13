@@ -10,9 +10,11 @@ from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 
 
 def doctor_dashboard(request):
+    if not request.user.is_authenticated:
+        return redirect(f"{'/users/login'}?next={request.path}")
     user_status = check_if_user_is_doctor(request.user)
     if not user_status["is_user_doctor"]:
-        return redirect(user_status["user_identity"])
+        return redirect(user_status["user_identity"]) 
     # if not re.match(".@healthease.com$", user_email):
     #     message = "yes match"
     #     if re.search(".@gmail.com$", user_email):
@@ -26,22 +28,24 @@ def doctor_dashboard(request):
 
     todays_date = timezone.now().date()
     current_time = timezone.now()
-    appointment_for_today = Appointment.objects.filter(date=todays_date, time__gt=current_time, doctor_id=request.user, patient_id__isnull=False).exclude(status='closed')
+    appointment_for_today = Appointment.objects.filter(date=todays_date, doctor_id=request.user, patient_id__isnull=False).exclude(status='closed')
     upcoming_appointments = Appointment.objects.filter(doctor_id=request.user).exclude(date=todays_date)
     booked_appointments = 0
     not_booked_appointments = 0
-    total_appointments = len(appointment_for_today)
-    for appointment in appointment_for_today:
+    total_appointments = Appointment.objects.filter(date=todays_date, doctor_id=request.user).exclude(status='closed')
+    for appointment in total_appointments:
         if appointment.patient_id:
             booked_appointments = booked_appointments+1
         else:
             not_booked_appointments = not_booked_appointments+1
 
     doctor = f"{request.user.first_name} {request.user.last_name}"
-    return render(request, 'doctor_dashboard.html', { 'doctor':doctor, 'appointment_for_today':appointment_for_today, 'booked': booked_appointments, 'not_booked': not_booked_appointments, 'total_appointments': total_appointments, 'request': request, 'todays_date': todays_date})
+    return render(request, 'doctor_dashboard.html', { 'doctor':doctor, 'appointment_for_today':appointment_for_today, 'booked': booked_appointments, 'not_booked': not_booked_appointments, 'total_appointments': total_appointments.count(), 'request': request, 'todays_date': todays_date})
 
 
 def create_appointment(request):
+    if not request.user.is_authenticated:
+        return redirect(f"{'/users/login'}?next={request.path}")
     if request.method == 'POST':
         appointment_id = request.POST.get('appointment_id')
 
@@ -70,6 +74,8 @@ def create_appointment(request):
     
 
 def add_prescription(request, appointment_id):
+    if not request.user.is_authenticated:
+        return redirect(f"{'/users/login'}?next={request.path}")
     if request.method=="POST":
         status = request.POST.get('status')
         prescription = request.POST.get('prescription')
@@ -88,6 +94,8 @@ def add_prescription(request, appointment_id):
     return render(request, 'add_prescription.html', {'appointment': appointment, 'appointment_history': appointment_history, 'patient': patient, 'request': request})
     
 def appointments_list(request):
+    if not request.user.is_authenticated:
+        return redirect(f"{'/users/login'}?next={request.path}")
     appointment_list = Appointment.objects.filter(doctor_id=request.user).order_by('date', 'time')
     paginator = Paginator(appointment_list, 10) # Show 10 appointments per page
 

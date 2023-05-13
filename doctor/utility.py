@@ -11,5 +11,7 @@ def check_if_user_is_doctor(user):
             user_identity = "patient_dashboard"
             user_details['is_user_doctor'] = is_user_doctor
             user_details['user_identity'] = user_identity
+        
     
     return user_details
+

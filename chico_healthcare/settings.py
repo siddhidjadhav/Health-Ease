@@ -33,7 +33,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -45,14 +45,18 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    "corsheaders",
     'users',
     'patient',
     'insurance_provider',
     'doctor',
     'system',
+    'navbars',
+    'homepage',
 ]
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -61,6 +65,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+
 
 ROOT_URLCONF = 'chico_healthcare.urls'
 
@@ -130,9 +136,59 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = '/static/'
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
+STATIC_DIR = os.path.join(BASE_DIR, "static")
+
+
+STATICFILES_DIRS = [ STATIC_DIR ]
+
+STATIC_URL = 'static/'
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+
+
+# STATICFILES_DIRS = [
+#     # os.path.join(BASE_DIR, 'static'),
+#     os.path.join(BASE_DIR, 'users', 'static/'),
+#     os.path.join(BASE_DIR, 'patient', 'static/patient'),
+#     os.path.join(BASE_DIR, 'doctor', 'static/doctor'),
+#     os.path.join(BASE_DIR, 'insurance_provider', 'static/insurance_provider'),
+# ]
+
+
+
+
+
+DEFAULT_FROM_EMAIL = 'patilom2114@example.com'
+
+# Use the SendGrid API backend for sending email
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.sendgrid.net'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+
+# Set the SendGrid API key as the email password
+EMAIL_HOST_PASSWORD = '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'
+
+CORS_ALLOWED_ORIGINS = [
+    "https://my-service-222rg7v33a-uc.a.run.app",
+    "https://healthinessease.com"
+]
+
+CORS_ORIGIN_WHITELIST = [
+    'https://my-service-222rg7v33a-uc.a.run.app',
+    "https://healthinessease.com"
+    # add any other origins that need to be whitelisted
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://my-service-222rg7v33a-uc.a.run.app",
+    "https://healthinessease.com"
+]
+
