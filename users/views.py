@@ -39,8 +39,9 @@ def register_user(request):
         # Log the user in and redirect to the home page
         authenticated_user = authenticate(request, username=username, password=password)
         login(request, authenticated_user)
-        messages.success(request, 'Your account has been created!')
-        return redirect('patient_dashboard')
+        
+        user_identity = get_user_identity(request.user)
+        return redirect(user_identity)
 
 
     return render(request, 'register.html', {})

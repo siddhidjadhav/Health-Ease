@@ -7,6 +7,7 @@
   - Use command - "python -m venv env" 
   - Activate virtual environment using command 
     - for windows "env/bin/activate"
+    - for ios "source env/bin/activate"
     - Here env is the name of the virtual environment
 - Now install all the project dependencies 
   - use command - "pip install -r requirements.txt"
