@@ -90,8 +90,14 @@ WSGI_APPLICATION = 'chico_healthcare.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        # 'ENGINE': 'django.db.backends.sqlite3',
+        # 'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'my_django_db',
+        'USER': 'my_django_user',
+        'PASSWORD': 'healthease@1234',
+        'HOST': '34.69.76.245',
+        'PORT': 5432
     }
 }
 
@@ -126,7 +132,7 @@ TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
-USE_TZ = True
+# USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)
